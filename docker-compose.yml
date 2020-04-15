@@ -1,0 +1,16 @@
+version: "3.0"
+services:
+  bookstore-datamanager:
+    build: ./bookstore-data-manager
+    ports:
+      - "8001:8001"
+  bookstore-devservice:
+    build: ./bookstore-devservice
+    ports:
+      - "8002:8002"
+  bookstore-frontend:
+    build: ./bookstore-frontend
+    ports:
+      - "8000:8000"
+    environment:
+      - "JAVA_TOOL_OPTIONS=-Djavax.xml.accessExternalDTD=all"
