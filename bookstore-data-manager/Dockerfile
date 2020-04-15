@@ -4,5 +4,5 @@ WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 
-EXPOSE 8000
+EXPOSE 8001
 ENTRYPOINT ["mvn","spring-boot:run"] 

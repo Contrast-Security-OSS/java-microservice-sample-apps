@@ -1,0 +1,41 @@
+version: "3.0"
+services:
+  bookstore-datamanager:
+    build: ./bookstore-data-manager
+    ports:
+      - "8001:8001"
+    networks:
+      - sample-app
+  bookstore-devservice:
+    build: ./bookstore-devservice
+    ports:
+      - "8002:8002"
+    networks:
+      - sample-app
+  bookstore-frontend:
+    build: ./bookstore-frontend
+    ports:
+      - "8000:8000"
+    environment:
+      - "JAVA_TOOL_OPTIONS=-Djavax.xml.accessExternalDTD=all"
+    networks:
+      - sample-app
+  PROD:
+    image: nginx
+    volumes:
+      - "./PROD:/usr/share/nginx/html:ro"
+    networks:
+      sample-app:
+        aliases:
+          - PROD.acmedevinfo.local
+  SECRET:
+    image: nginx
+    volumes:
+      - "./SECRET:/usr/share/nginx/html:ro"
+    networks:
+      sample-app:
+        aliases:
+          - SECRET.acmedevinfo.local
+
+networks:
+  sample-app:
