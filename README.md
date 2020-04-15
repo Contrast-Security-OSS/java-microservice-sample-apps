@@ -139,3 +139,7 @@ $ curl http://localhost:8002/application/info?env=google.com/?
 ```
 
 Obviously in this case we ask the server to retrieve Google content, but it could as easily be pointed towards URLs typically only accessed within your perimeter.
+
+```
+$ curl http://localhost:8002/application/info?env=SECRET
+```
