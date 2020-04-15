@@ -34,7 +34,18 @@ The bookstore-debug app is a Dropwizard app that offers info to the devs:
 
 The first step is to start all 3 of the services, which will run on ports 8000, 8001 and 8002, respectively.
 
-Each service has a Dockerfile to make running 1 step. Consult each service's `README.md` to see the commands.
+To start normally:
+```
+$ docker-compose up
+```
+
+To start with Contrast enabled, first edit contrast_security.yaml with your agent credentials, then:
+```
+$ cp /path/to/contrast.jar .
+$ docker-compose -f docker-compose.yml -f docker-compose-contrast.yml up
+```
+
+If you don't want to use docker-compose, each service has a Dockerfile to make running 1 step. Consult each service's `README.md` to see the commands.
 
 ### Using the services
 
@@ -66,7 +77,7 @@ $ curl http://localhost:8000/debug
 ```
 
 ## Detecting the vulnerabilities
-To add the Java Agent to all the services above:
+To detect the vulnerabilities, start the apps with Contrast enabled as described above.  Then use the services to exercise the code.  It should not be necessary to exploit the vulnerabilities, in order for Contrast to identify the vulnerabilities.
 
 ## Exploiting the Vulnerabilities
 

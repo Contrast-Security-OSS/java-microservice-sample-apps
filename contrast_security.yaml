@@ -1,0 +1,13 @@
+api: 
+  url: https://eval.contrastsecurity.com/Contrast/
+  service_key: 
+  api_key: 
+  user_name: 
+
+#agent:
+#  logger:
+#    level: debug
+
+server:
+  name: bookstore-server
+  environment: development

@@ -1,0 +1,29 @@
+version: "3.0"
+services:
+  bookstore-datamanager:
+    volumes:
+      - "./contrast_security.yaml:/etc/contrast/java/contrast_security.yaml"
+      - "./contrast.jar:/tmp/contrast.jar"
+    environment:
+      - "CONTRAST__AGENT__JAVA__STANDALONE_APP_NAME=Bookstore Data Manager"
+      - "CONTRAST__AGENT__CONTRAST_WORKING_DIR=/tmp/contrast"
+      - "CONTRAST__AGENT__LOGGER__STDOUT=true"
+      - "JAVA_TOOL_OPTIONS=-javaagent:/tmp/contrast.jar"
+  bookstore-devservice:
+    volumes:
+      - "./contrast_security.yaml:/etc/contrast/java/contrast_security.yaml"
+      - "./contrast.jar:/tmp/contrast.jar"
+    environment:
+      - "CONTRAST__AGENT__JAVA__STANDALONE_APP_NAME=Bookstore Devservice"
+      - "CONTRAST__AGENT__CONTRAST_WORKING_DIR=/tmp/contrast"
+      - "CONTRAST__AGENT__LOGGER__STDOUT=true"
+      - "JAVA_TOOL_OPTIONS=-javaagent:/tmp/contrast.jar"
+  bookstore-frontend:
+    volumes:
+      - "./contrast_security.yaml:/etc/contrast/java/contrast_security.yaml"
+      - "./contrast.jar:/tmp/contrast.jar"
+    environment:
+      - "CONTRAST__AGENT__JAVA__STANDALONE_APP_NAME=Bookstore Front End"
+      - "CONTRAST__AGENT__CONTRAST_WORKING_DIR=/tmp/contrast"
+      - "CONTRAST__AGENT__LOGGER__STDOUT=true"
+      - "JAVA_TOOL_OPTIONS=-Djavax.xml.accessExternalDTD=all -javaagent:/tmp/contrast.jar"
