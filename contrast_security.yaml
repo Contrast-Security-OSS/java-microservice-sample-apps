@@ -1,8 +1,8 @@
 api: 
   url: https://eval.contrastsecurity.com/Contrast/
-  service_key: 
-  api_key: 
-  user_name: 
+  service_key: FRGZV6Y6AVXAV0HS
+  api_key: Z0bR33M8MfFEinm1hLj7XB9wkt0FdLhd
+  user_name: agent_0e42c2de-1dc7-481e-8547-2e8d08b2213a@ContrastSecurityOperationTeam
 
 #agent:
 #  logger:

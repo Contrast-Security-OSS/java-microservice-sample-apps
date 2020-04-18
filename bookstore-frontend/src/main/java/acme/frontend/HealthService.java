@@ -30,6 +30,7 @@ public final class HealthService {
     return new HealthSummary(
         Lists.newArrayList(
             performHealthCheck("data-manager", ServicePaths.DATA_MANAGER_URL),
+            performHealthCheck("profanity-checker", ServicePaths.PROFANITY_CHECKER_URL),
             performHealthCheck("devservice", ServicePaths.DEBUG_URL)));
   }
 
@@ -37,15 +38,21 @@ public final class HealthService {
    * For every path given, add the /ping to it and see if it's up. If a service doesn't respond in
    * short order then report them as down.
    */
-  private HealthCheck performHealthCheck(final String name, final String baseUrl)
-      throws IOException {
-    final CloseableHttpClient client = HttpClientBuilder.create().build();
-    final HttpUriRequest request = RequestBuilder.get(baseUrl + "ping").build();
-    final CloseableHttpResponse response = client.execute(request);
-    final StatusLine statusLine = response.getStatusLine();
-    int status = statusLine != null ? statusLine.getStatusCode() : -1;
-    return new HealthCheck(name,
-        status >= 200 && status < 300 ? HealthStatus.HEALTHY : HealthStatus.DOWN);
+  private HealthCheck performHealthCheck(final String name, final String baseUrl) {
+    HealthStatus healthStatus = HealthStatus.DOWN;
+    try {
+      final CloseableHttpClient client = HttpClientBuilder.create().build();
+      final HttpUriRequest request = RequestBuilder.get(baseUrl + "ping").build();
+      final CloseableHttpResponse response = client.execute(request);
+      final StatusLine statusLine = response.getStatusLine();
+      int status = statusLine != null ? statusLine.getStatusCode() : -1;
+      System.out.println("STATUSLINE: " + statusLine);
+      System.out.println("STATUS: " + status);
+      healthStatus = status >= 200 && status < 300 ? HealthStatus.HEALTHY : HealthStatus.DOWN;
+    } catch(IOException e) {
+      e.printStackTrace();
+    }
+    return new HealthCheck(name, healthStatus);
   }
 
   private enum HealthStatus {

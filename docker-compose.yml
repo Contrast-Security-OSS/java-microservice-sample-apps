@@ -12,6 +12,12 @@ services:
       - "8002:8002"
     networks:
       - sample-app
+  bookstore-profanity-checker:
+    build: ./bookstore-profanity-checker
+    ports:
+      - "8003:8003"
+    networks:
+      - sample-app
   bookstore-frontend:
     build: ./bookstore-frontend
     ports:
