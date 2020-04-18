@@ -11,6 +11,7 @@
     <module>bookstore-data-manager</module>
     <module>bookstore-devservice</module>
     <module>bookstore-frontend</module>
+    <module>bookstore-profanity-checker</module>
   </modules>
   <properties>
     <contrast.version>3.7.3.14657</contrast.version>

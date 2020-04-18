@@ -46,8 +46,6 @@ public final class HealthService {
       final CloseableHttpResponse response = client.execute(request);
       final StatusLine statusLine = response.getStatusLine();
       int status = statusLine != null ? statusLine.getStatusCode() : -1;
-      System.out.println("STATUSLINE: " + statusLine);
-      System.out.println("STATUS: " + status);
       healthStatus = status >= 200 && status < 300 ? HealthStatus.HEALTHY : HealthStatus.DOWN;
     } catch(IOException e) {
       e.printStackTrace();
