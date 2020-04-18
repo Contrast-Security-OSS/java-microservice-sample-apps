@@ -1,0 +1,44 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>acme.bookstore</groupId>
+  <artifactId>parent-project</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>Java microservice apps</name>
+  <url>http://maven.apache.org</url>
+  <packaging>pom</packaging>
+  <modules>
+    <module>bookstore-data-manager</module>
+    <module>bookstore-devservice</module>
+    <module>bookstore-frontend</module>
+  </modules>
+  <properties>
+    <contrast.version>3.7.3.14657</contrast.version>
+  </properties>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.1.1</version>
+        <executions>
+          <execution>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>com.contrastsecurity</groupId>
+                  <artifactId>contrast-agent</artifactId>
+                  <version>${contrast.version}</version>
+                  <destFileName>contrast.jar</destFileName>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
