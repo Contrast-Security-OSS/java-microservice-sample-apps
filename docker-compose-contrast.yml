@@ -1,6 +1,7 @@
 version: "3.0"
 services:
   bookstore-datamanager:
+    build: ./bookstore-data-manager
     volumes:
       - "./contrast_security.yaml:/etc/contrast/java/contrast_security.yaml"
       - "./target/dependency/contrast.jar:/tmp/contrast.jar"
@@ -11,6 +12,7 @@ services:
       - "CONTRAST__SERVER__ENVIRONMENT=development"
       - "JAVA_TOOL_OPTIONS=-javaagent:/tmp/contrast.jar"
   bookstore-devservice:
+    build: ./bookstore-devservice
     volumes:
       - "./contrast_security.yaml:/etc/contrast/java/contrast_security.yaml"
       - "./target/dependency/contrast.jar:/tmp/contrast.jar"
@@ -21,6 +23,7 @@ services:
       - "CONTRAST__SERVER__ENVIRONMENT=development"
       - "JAVA_TOOL_OPTIONS=-javaagent:/tmp/contrast.jar"
   bookstore-frontend:
+    build: ./bookstore-frontend
     volumes:
       - "./contrast_security.yaml:/etc/contrast/java/contrast_security.yaml"
       - "./target/dependency/contrast.jar:/tmp/contrast.jar"
