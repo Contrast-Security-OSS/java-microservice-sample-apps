@@ -30,6 +30,13 @@ The bookstore-debug app is a Dropwizard app that offers info to the devs:
  - GET /application/ping
  - GET /application/info?env=qa (this endpoint has an SSRF vulnerability)
 
+### bookstore-profanity-checker
+
+The bookstore-profanity-checker app is a RESTEasy (https://resteasy.github.io/) app that offers a profanity check to new book titles:
+ - GET /api/ping
+ - GET /api/profanity/check/title?title=Title+Here
+ - POST /api/profanity/check/book
+
 ## Usage
 
 The first step is to start all 3 of the services, which will run on ports 8000, 8001 and 8002, respectively.
@@ -76,8 +83,13 @@ Get debug info on the service:
 $ curl http://localhost:8000/debug
 ```
 
+You can also check a title value for profanity (the word "darn" is profane according to this PG-rated filter). This is done automatically through the "add a new book" endpoint:
+```
+$ curl http://localhost:8003/api/profanity/check/title?title=This+Darn+Title
+```
+
 ## Detecting the vulnerabilities
-To detect the vulnerabilities, start the apps with Contrast enabled as described above.  Then use the services to exercise the code.  It should not be necessary to exploit the vulnerabilities, in order for Contrast to identify the vulnerabilities.
+To detect the vulnerabilities, start the apps with Contrast enabled as described above.  Then use the services to exercise the code.  It isn't necessary to exploit the vulnerabilities in order for Contrast to identify the vulnerabilities.
 
 ## Exploiting the Vulnerabilities
 
@@ -133,7 +145,7 @@ $ docker exec -it java-microservice-sample-apps_bookstore-datamanager_1 ls -al /
 ```
 
 ### Server Side Request Forgery (SSRF)
-The `bookstore-frontend` exposes a "info" service, only intended for developers. It is intended to be used to rertieve data about different developer environments, but it can be used to force the app to retrieve data from other URLs:
+The `bookstore-frontend` exposes a "info" service, only intended for developers. It is intended to be used to retrieve data about different developer environments, but it can be used to force the app to retrieve data from other URLs:
 ```
 $ curl http://localhost:8002/application/info?env=google.com/?
 ```
