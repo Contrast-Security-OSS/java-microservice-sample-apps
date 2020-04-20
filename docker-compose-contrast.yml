@@ -1,15 +1,5 @@
 version: "3.0"
 services:
-  bookstore-profanity-checker:
-    volumes:
-      - "./contrast_security.yaml:/etc/contrast/java/contrast_security.yaml"
-      - "./contrast.jar:/tmp/contrast.jar"  
-    environment:
-      - "CONTRAST__AGENT__JAVA__STANDALONE_APP_NAME=Bookstore Profanity Checker"
-      - "CONTRAST__AGENT__CONTRAST_WORKING_DIR=/tmp/contrast"
-      - "CONTRAST__AGENT__LOGGER__STDOUT=true"
-      - "CONTRAST__SERVER__ENVIRONMENT=development"
-      - "JAVA_TOOL_OPTIONS=-javaagent:/tmp/contrast.jar"
   bookstore-datamanager:
     build: ./bookstore-data-manager
     volumes:
@@ -43,3 +33,13 @@ services:
       - "CONTRAST__AGENT__LOGGER__STDOUT=true"
       - "CONTRAST__SERVER__ENVIRONMENT=development"
       - "JAVA_TOOL_OPTIONS=-Djavax.xml.accessExternalDTD=all -javaagent:/tmp/contrast.jar"
+  bookstore-profanity-checker:
+    volumes:
+      - "./contrast_security.yaml:/etc/contrast/java/contrast_security.yaml"
+      - "./contrast.jar:/tmp/contrast.jar"  
+    environment:
+      - "CONTRAST__AGENT__JAVA__STANDALONE_APP_NAME=Bookstore Profanity Checker"
+      - "CONTRAST__AGENT__CONTRAST_WORKING_DIR=/tmp/contrast"
+      - "CONTRAST__AGENT__LOGGER__STDOUT=true"
+      - "CONTRAST__SERVER__ENVIRONMENT=development"
+      - "JAVA_TOOL_OPTIONS=-javaagent:/tmp/contrast.jar"
