@@ -34,6 +34,7 @@ services:
       - "CONTRAST__SERVER__ENVIRONMENT=development"
       - "JAVA_TOOL_OPTIONS=-Djavax.xml.accessExternalDTD=all -javaagent:/tmp/contrast.jar"
   bookstore-profanity-checker:
+    build: ./bookstore-profanity-checker
     volumes:
       - "./contrast_security.yaml:/etc/contrast/java/contrast_security.yaml"
       - "./contrast.jar:/tmp/contrast.jar"  
