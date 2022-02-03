@@ -42,6 +42,12 @@ public final class BookstoreDataService {
     books.add(book);
   }
 
+  @RequestMapping(path = "/delete", method = RequestMethod.POST)
+  public void deleteBook(@RequestBody final Book book) {
+    System.out.println("Deleting book: " + book.getTitle());
+    books.removeIf(existingBook -> existingBook.getTitle().equals(book.getTitle()));
+  }
+
   /**
    * This is how our legacy systems update a book when the page count needs to be updated.
    */

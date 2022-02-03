@@ -41,17 +41,17 @@ public final class BookService {
     final Unmarshaller unmarshaller = jaxb.createUnmarshaller();
     final Book book = (Book) unmarshaller.unmarshal(body);
     System.out.println("Forwarding new book " + book.title + " to data-manager");
-    sendToDataManager(book);
+    sendToDataManager(book,"add");
     return Response.ok().build();
   }
 
   /**
-   * Send the book to the microservice that actually stores it.
+   * Send the book to the microservice that actually actions request.
    */
-  private void sendToDataManager(final Book book) throws IOException {
+  private void sendToDataManager(final Book book,String path) throws IOException {
     String bookJson = gson.toJson(book);
     final CloseableHttpClient client = HttpClientBuilder.create().build();
-    final HttpUriRequest request = RequestBuilder.post(ServicePaths.DATA_MANAGER_URL + "add")
+    final HttpUriRequest request = RequestBuilder.post(ServicePaths.DATA_MANAGER_URL + path)
         .setHeader("Content-Type", "application/json")
         .setEntity(new StringEntity(bookJson)).build();
     final CloseableHttpResponse response = client.execute(request);
@@ -60,6 +60,22 @@ public final class BookService {
       EntityUtils.consumeQuietly(entity);
     }
   }
+
+  /**
+   * Take a request to add a delete a book, send it to the backend microservice asynchronously. This
+   * endpoint expects the book in XML form. Validate it's a valid book before forwarding on.
+   */
+  @Path("/delete")
+  @POST
+  public Response deleteBook(final InputStream body) throws JAXBException, IOException {
+    final JAXBContext jaxb = JAXBContext.newInstance(Book.class);
+    final Unmarshaller unmarshaller = jaxb.createUnmarshaller();
+    final Book book = (Book) unmarshaller.unmarshal(body);
+    System.out.println("Forwarding book to delete " + book.title + " to data-manager");
+    sendToDataManager(book,"delete");
+    return Response.ok().build();
+  }
+
 
   /**
    * Call the bookstore-data-manager service to get the books.
